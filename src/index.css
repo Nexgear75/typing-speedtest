@@ -81,13 +81,27 @@
 }
 
 @theme {
-  --color-background: #000000;
-  --color-primary: #D3D6E2;
-  --color-secondary: #7DACEC;
-  --color-sub: #51555D;
+  --color-background: var(--bg);
+  --color-primary: var(--fg);
+  --color-secondary: var(--accent);
+  --color-sub: var(--muted);
 
   --font-display: Manrope;
   --font-mono: "IBM Plex Mono";
+}
+
+:root {
+  --bg: #000000;
+  --fg: #D3D6E2;
+  --accent: #7DACEC;
+  --muted: #51555D;
+}
+
+:root.light {
+  --bg: #F5F5F5;
+  --fg: #1a1a2e;
+  --accent: #3B6BB5;
+  --muted: #9ca3af;
 }
 
 @layer base {
@@ -100,12 +114,22 @@
     background-color: var(--color-background);
     color: var(--color-primary);
     font-family: "IBM_Plex_Mono", normal;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
 }
 
 .cursor {
