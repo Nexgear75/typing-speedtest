@@ -12,14 +12,17 @@ export interface TestResult {
 
 interface TypingTestProps {
   text: string
+  source: string
   onComplete: (result: TestResult) => void
 }
 
-export default function TypingTest({ text, onComplete }: TypingTestProps) {
+export default function TypingTest({ text, source, onComplete }: TypingTestProps) {
   const [typed, setTyped] = useState("")
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLParagraphElement>(null)
   const charsRef = useRef<(HTMLSpanElement | null)[]>([])
   const [cursorPos, setCursorPos] = useState({ left: 0, top: 0 })
+  const [needsScroll, setNeedsScroll] = useState(false)
 
   const startTimeRef = useRef<number | null>(null)
   const wpmHistoryRef = useRef<number[]>([])
@@ -115,8 +118,16 @@ export default function TypingTest({ text, onComplete }: TypingTestProps) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleKeyDown])
 
+  // Check if text overflows the 7-line limit
+  useEffect(() => {
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+    setNeedsScroll(wrapper.scrollHeight > wrapper.clientHeight)
+  }, [text])
+
   useEffect(() => {
     const container = containerRef.current
+    const wrapper = wrapperRef.current
     const targetSpan = charsRef.current[typed.length]
     if (!container || !targetSpan) return
 
@@ -127,30 +138,56 @@ export default function TypingTest({ text, onComplete }: TypingTestProps) {
       left: spanRect.left - containerRect.left,
       top: spanRect.top - containerRect.top,
     })
-  }, [typed.length])
+
+    // Auto-scroll: keep the active line in the top half of the visible area
+    if (wrapper && needsScroll) {
+      const wrapperRect = wrapper.getBoundingClientRect()
+      const cursorRelativeToWrapper = spanRect.top - wrapperRect.top
+      const lineHeight = spanRect.height * 2
+
+      if (cursorRelativeToWrapper > wrapperRect.height - lineHeight) {
+        wrapper.scrollTop += lineHeight
+      } else if (cursorRelativeToWrapper < 0) {
+        wrapper.scrollTop = Math.max(0, wrapper.scrollTop - lineHeight)
+      }
+    }
+  }, [typed.length, needsScroll])
 
   return (
-    <p ref={containerRef} className="relative w-full max-w-5xl mx-auto text-lg sm:text-xl md:text-2xl font-mono leading-loose text-justify">
-      <span
-        className="cursor"
-        style={{ left: cursorPos.left, top: cursorPos.top }}
-      />
-      {text.split("").map((char, i) => {
-        let colorClass = "text-sub"
-        if (i < typed.length) {
-          colorClass = typed[i] === char ? "text-primary" : "text-secondary underline"
-        }
-
-        return (
+    <div className="w-full max-w-5xl mx-auto">
+      <div
+        ref={wrapperRef}
+        className="overflow-hidden scroll-smooth max-h-[21em]"
+      >
+        <p
+          ref={containerRef}
+          className="relative text-lg sm:text-xl md:text-2xl font-mono leading-loose text-justify"
+        >
           <span
-            key={i}
-            ref={(el) => { charsRef.current[i] = el }}
-            className={colorClass}
-          >
-            {char}
-          </span>
-        )
-      })}
-    </p>
+            className="cursor"
+            style={{ left: cursorPos.left, top: cursorPos.top }}
+          />
+          {text.split("").map((char, i) => {
+            let colorClass = "text-sub"
+            if (i < typed.length) {
+              colorClass = typed[i] === char ? "text-primary" : "text-secondary underline"
+            }
+
+            return (
+              <span
+                key={i}
+                ref={(el) => { charsRef.current[i] = el }}
+                className={colorClass}
+              >
+                {char}
+              </span>
+            )
+          })}
+        </p>
+      </div>
+      <p className="mt-6 text-sm text-sub font-light" style={{ fontFamily: "Manrope" }}>
+        {source}
+      </p>
+    </div>
   )
 }
