@@ -1,10 +1,17 @@
+import { motion } from "motion/react"
+
 interface FooterProps {
   bestWpm: number
 }
 
 export default function Footer({ bestWpm }: FooterProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 py-5 px-8 sm:px-12 md:px-20">
+    <motion.div
+      className="fixed bottom-0 left-0 right-0 py-5 px-8 sm:px-12 md:px-20"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+    >
       <div className="flex justify-between text-sub font-mono text-sm">
         <div className="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -22,6 +29,6 @@ export default function Footer({ bestWpm }: FooterProps) {
           <span>{bestWpm || "–"}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

@@ -1,3 +1,4 @@
+import { motion } from "motion/react"
 import type { TestResult } from "./TypingTest"
 
 interface ResultsProps {
@@ -10,9 +11,14 @@ export default function Results({ result, onReset }: ResultsProps) {
   const correctKeystrokes = totalKeystrokes - totalErrors
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col gap-6 sm:gap-8 animate-fade-in">
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-6 sm:gap-8">
       {/* Stats bar */}
-      <div className="flex items-center justify-between gap-6 sm:gap-12 md:gap-16 rounded-2xl border border-primary/15 bg-background px-6 sm:px-10 py-6 sm:py-8">
+      <motion.div
+        className="flex items-center justify-between gap-6 sm:gap-12 md:gap-16 rounded-2xl border border-primary/15 bg-background px-6 sm:px-10 py-6 sm:py-8"
+        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
         <div className="flex flex-col items-center justify-between">
           <span className="text-4xl sm:text-5xl md:text-6xl font-light text-primary tracking-tight" style={{ fontFamily: "'IBM Plex Mono'" }}>
             {wpm}
@@ -50,10 +56,16 @@ export default function Results({ result, onReset }: ResultsProps) {
           </svg>
           <span className="text-[10px] font-light tracking-widest uppercase" style={{ fontFamily: "'IBM Plex Mono'" }}>esc</span>
         </button>
-      </div>
+      </motion.div>
 
       {/* Chart */}
-      <WpmChart history={wpmHistory} />
+      <motion.div
+        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.4, ease: "easeOut", delay: 0.15 }}
+      >
+        <WpmChart history={wpmHistory} />
+      </motion.div>
     </div>
   )
 }

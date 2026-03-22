@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react"
+import { motion } from "motion/react"
 
 export interface TestResult {
   wpm: number
@@ -154,7 +155,12 @@ export default function TypingTest({ text, source, onComplete }: TypingTestProps
   }, [typed.length, needsScroll])
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <motion.div
+      className="w-full max-w-5xl mx-auto"
+      initial={{ opacity: 0, filter: "blur(12px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
       <div
         ref={wrapperRef}
         className="overflow-hidden scroll-smooth max-h-[21em]"
@@ -185,9 +191,15 @@ export default function TypingTest({ text, source, onComplete }: TypingTestProps
           })}
         </p>
       </div>
-      <p className="mt-6 text-sm text-sub font-light" style={{ fontFamily: "Manrope" }}>
+      <motion.p
+        className="mt-6 text-sm text-sub font-light"
+        style={{ fontFamily: "Manrope" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+      >
         {source}
-      </p>
-    </div>
+      </motion.p>
+    </motion.div>
   )
 }

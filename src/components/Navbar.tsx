@@ -1,3 +1,4 @@
+import { motion } from "motion/react"
 
 type Lang = "en" | "fr"
 
@@ -10,7 +11,12 @@ interface NavbarProps {
 
 export default function Navbar({ isDark, onToggleTheme, lang, onSwitchLang }: NavbarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 py-5 px-8 sm:px-12 md:px-20 z-10">
+    <motion.header
+      className="fixed top-0 left-0 right-0 py-5 px-8 sm:px-12 md:px-20 z-10"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <nav className="flex justify-between items-center">
         <div className="font-extrabold">
           Typing Speedtest
@@ -60,6 +66,6 @@ export default function Navbar({ isDark, onToggleTheme, lang, onSwitchLang }: Na
           </button>
         </div>
       </nav>
-    </header>
+    </motion.header>
   )
 }
