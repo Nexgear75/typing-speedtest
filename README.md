@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# Typing Speedtest
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimalist typing speed test inspired by [Monkeytype](https://monkeytype.com), built as a single-page application.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Motion](https://img.shields.io/badge/Motion-12-FF0055?logo=framer&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Nginx-2496ED?logo=docker&logoColor=white)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Real-time typing test** with character-by-character feedback and animated cursor
+- **WPM & accuracy tracking** — errors are counted even if corrected
+- **WPM history chart** with smooth curve, highest/lowest annotations
+- **English & French quotes** sourced from Monkeytype's open dataset
+- **Dark / Light theme** toggle with localStorage persistence
+- **Auto-scroll** for long texts (7+ lines)
+- **Best score** saved locally and displayed in the footer
+- **Blur reveal animations** powered by Motion
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
 
-## Expanding the ESLint configuration
+```bash
+# Install dependencies
+npm install
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# Start dev server
+npm run dev
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Build for production
+npm run build
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Preview production build
+npm run preview
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Lint
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deployment
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The project includes a Docker + Nginx setup with a GitHub Actions CI/CD pipeline that builds and deploys to a VPS via Traefik.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Build Docker image locally
+docker build -t typing-speedtest .
+
+# Run locally
+docker run -p 3000:80 typing-speedtest
 ```
+
+### GitHub Actions Secrets
+
+| Secret | Description |
+|--------|-------------|
+| `VPS_HOST` | VPS IP or hostname |
+| `VPS_USER` | SSH username |
+| `VPS_SSH_KEY` | SSH private key |
+| `GHCR_PAT` | GitHub PAT with `read:packages` scope |
+| `VPS_DEPLOY_PATH` | Path to docker-compose.yml on VPS |
+
+## Controls
+
+| Key | Action |
+|-----|--------|
+| `Esc` | Reset with a new quote |
+| Any character | Type the displayed text |
+| `Backspace` | Delete last character |
+
+## Tech Stack
+
+- **React 19** — UI framework
+- **TypeScript 5.9** — Type safety
+- **Vite 7** — Build tool with HMR
+- **Tailwind CSS 4** — Utility-first styling with custom theme tokens
+- **Motion** — Blur reveal and slide animations
+- **Nginx** — Production static file serving
+- **GitHub Actions** — CI/CD pipeline to GHCR + VPS
+
+## Fonts
+
+- **Manrope** (variable) — Headers and UI labels
+- **IBM Plex Mono** — Typing area, stats, and monospace elements
+
+## License
+
+MIT
